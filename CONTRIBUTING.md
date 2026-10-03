@@ -1,5 +1,7 @@
 # Contributing
 
+> This is ponytail-ue, an Unreal Engine C++ fork. Changes to the shared, non-Unreal parts belong upstream at [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail). Here, Unreal rule changes should keep the UE invariants in `scripts/check-rule-copies.js` passing; the benchmark harness below has no Unreal task yet.
+
 Thanks for helping. There are two kinds of changes, with different bars.
 
 ## Changes to the ruleset need a benchmark

@@ -20,17 +20,17 @@
 > [`skills/ponytail/SKILL.md`](skills/ponytail/SKILL.md).
 >
 > Claude Code: `/plugin marketplace add cryptosebek/ponytail-ue`, then `/plugin install ponytail@ponytail-ue`.
-> Everything below is the upstream README. Its install commands point at upstream, and its benchmark
-> numbers were measured upstream on a FastAPI + React repo, not on Unreal code.
+> Install commands below point at this fork. The benchmark numbers
+> were measured upstream on a FastAPI + React repo, not on Unreal code.
 
 <p align="center">
   <a href="https://trendshift.io/repositories/50668?utm_source=repository-badge&amp;utm_medium=badge&amp;utm_campaign=badge-repository-50668" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/repositories/50668" alt="DietrichGebert%2Fponytail | Trendshift" width="250" height="55"/></a>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/github/stars/DietrichGebert/ponytail?style=flat-square&color=111111&label=stars" alt="Stars">
-  <img src="https://img.shields.io/github/v/release/DietrichGebert/ponytail?style=flat-square&color=111111&label=release" alt="Release">
-  <img src="https://img.shields.io/npm/v/@dietrichgebert/ponytail?style=flat-square&color=111111&label=npm" alt="npm">
+  <img src="https://img.shields.io/github/stars/cryptosebek/ponytail-ue?style=flat-square&color=111111&label=stars" alt="Stars">
+  <img src="https://img.shields.io/github/v/release/cryptosebek/ponytail-ue?style=flat-square&color=111111&label=release" alt="Release">
+  <img src="https://img.shields.io/npm/v/ponytail-ue?style=flat-square&color=111111&label=npm" alt="npm">
   <img src="https://img.shields.io/badge/works%20with-20%20agents-111111?style=flat-square" alt="Works with 20 agents">
   <img src="https://img.shields.io/badge/license-MIT-111111?style=flat-square" alt="MIT license">
 </p>
@@ -80,6 +80,15 @@ With ponytail:
 ```html
 <!-- ponytail: browser has one -->
 <input type="date">
+```
+
+In Unreal: you ask for health regen every two seconds. Your agent overrides Tick, accumulates DeltaTime in a float, adds a regen manager component, and exposes six properties to Blueprint.
+
+With ponytail-ue:
+
+```cpp
+// ponytail: engine has a timer
+GetWorldTimerManager().SetTimer(RegenHandle, this, &AMyCharacter::Regen, 2.f, true);
 ```
 
 More survivors in [examples/](examples/).
@@ -142,10 +151,10 @@ The Claude Code and Codex plugins (and the Cursor hooks) run two tiny Node.js li
 ### Claude Code
 
 ```
-/plugin marketplace add DietrichGebert/ponytail
+/plugin marketplace add cryptosebek/ponytail-ue
 ```
 ```
-/plugin install ponytail@ponytail
+/plugin install ponytail@ponytail-ue
 ```
 (You have to send two separate prompts for the install to work) 
 
@@ -154,8 +163,8 @@ Same steps in the Claude Code Desktop app's Code tab: type the two `/plugin` com
 ### Codex
 
 ```bash
-codex plugin marketplace add DietrichGebert/ponytail
-codex plugin add ponytail@ponytail
+codex plugin marketplace add cryptosebek/ponytail-ue
+codex plugin add ponytail@ponytail-ue
 ```
 
 Run `codex` and open `/hooks`, review and trust its two lifecycle hooks, and start a new thread.
@@ -165,15 +174,15 @@ This same install also covers the Codex desktop app: restart the app after insta
 ### GitHub Copilot CLI
 
 ```bash
-copilot plugin marketplace add DietrichGebert/ponytail
-copilot plugin install ponytail@ponytail
+copilot plugin marketplace add cryptosebek/ponytail-ue
+copilot plugin install ponytail@ponytail-ue
 ```
 
 In an interactive Copilot CLI session, use the slash equivalents:
 
 ```
-/plugin marketplace add DietrichGebert/ponytail
-/plugin install ponytail@ponytail
+/plugin marketplace add cryptosebek/ponytail-ue
+/plugin install ponytail@ponytail-ue
 ```
 
 Copilot CLI namespaces plugin commands by plugin name. For example:
@@ -186,7 +195,7 @@ Copilot CLI namespaces plugin commands by plugin name. For example:
 ### Pi agent harness
 
 ```
-pi install git:github.com/DietrichGebert/ponytail
+pi install git:github.com/cryptosebek/ponytail-ue
 ```
 
 ### OpenCode
@@ -194,7 +203,7 @@ pi install git:github.com/DietrichGebert/ponytail
 Add to `opencode.json`:
 
 ```json
-{ "plugins": ["@dietrichgebert/ponytail"] }
+{ "plugins": ["ponytail-ue"] }
 ```
 
 Run from a checkout instead (the plugin reuses `hooks/` and `skills/`):
@@ -207,12 +216,14 @@ Injects the ruleset every turn at the active level; adds the `/ponytail` command
 
 OpenCode 2 only. The `./` path resolves against your project's `opencode.json`; to share one checkout across projects, point it at the absolute path of the checkout's `.opencode/plugins` directory. A `plugins` entry must name a **directory**, not a file: OpenCode 2 rejects a path to `ponytail.mjs` with `configured plugin path must be a directory`. Opening this repo in OpenCode 2 needs no entry at all: it loads `.opencode/plugins/index.js` on its own.
 
-OpenCode 1 uses the older `plugin` key: `{ "plugin": ["@dietrichgebert/ponytail"] }`, or from a checkout the file path: `{ "plugin": ["./.opencode/plugins/ponytail.mjs"] }`.
+ponytail-ue is not on npm yet; until it is, use the checkout file path below.
+
+OpenCode 1 uses the older `plugin` key: `{ "plugin": ["ponytail-ue"] }`, or from a checkout the file path: `{ "plugin": ["./.opencode/plugins/ponytail.mjs"] }`.
 
 ### Gemini CLI
 
 ```bash
-gemini extensions install https://github.com/DietrichGebert/ponytail
+gemini extensions install https://github.com/cryptosebek/ponytail-ue
 ```
 
 Loads the ruleset as always-on context every session and registers the `/ponytail` commands; the `skills/` ship too, activated when a task needs them.
@@ -229,7 +240,7 @@ For full plugin-tier support (automatic mode activation + ruleset injection on e
 Google is renaming Gemini CLI to Antigravity CLI (the `agy` binary); the same extension installs there:
 
 ```bash
-agy plugin install https://github.com/DietrichGebert/ponytail
+agy plugin install https://github.com/cryptosebek/ponytail-ue
 ```
 
 It reuses this repo's `gemini-extension.json`. One difference: Antigravity converts the `/ponytail` commands into skills, so you type them into the chat (e.g. `/ponytail-review` as a message) instead of picking them from a slash menu. Until the migration completes (around June 18, 2026), `gemini extensions install` still works too. To run it as an always-on rule instead, drop the ruleset into `.agents/rules/`.
@@ -237,7 +248,7 @@ It reuses this repo's `gemini-extension.json`. One difference: Antigravity conve
 ### Hermes Agent
 
 ```bash
-hermes plugins install DietrichGebert/ponytail --enable
+hermes plugins install cryptosebek/ponytail-ue --enable
 ```
 
 Restart Hermes after installing. The plugin injects the active Ponytail mode before each LLM turn, registers the bundled skills as `ponytail:<skill>`, and adds `/ponytail`, `/ponytail-review`, `/ponytail-audit`, `/ponytail-debt`, `/ponytail-gain`, and `/ponytail-help`. In shared gateways, restrict `/ponytail` to trusted users with Hermes slash-command access controls; runtime mode is process-local.
@@ -251,7 +262,7 @@ Reads `AGENTS.md` from the project root, zero setup. Copy [`AGENTS.md`](AGENTS.m
 Stage the collection in your library first, then add the skills you want:
 
 ```bash
-swival skills add --global https://github.com/DietrichGebert/ponytail  # stage into ~/.config/swival/library
+swival skills add --global https://github.com/cryptosebek/ponytail-ue  # stage into ~/.config/swival/library
 swival skills add ponytail                                             # install the collection into this project
 swival skills add --global ponytail                                    # or activate it in every project
 ```
@@ -263,7 +274,7 @@ On the command line, use a `$` prefix to explicitly activate a skill. For exampl
 ### Devin CLI
 
 ```bash
-devin plugins install DietrichGebert/ponytail
+devin plugins install cryptosebek/ponytail-ue
 ```
 
 Installs ponytail as a Devin plugin; skills are available as `/ponytail:ponytail`, `/ponytail:ponytail-review`, and so on.
@@ -279,7 +290,7 @@ Installs ponytail as an OpenClaw skill from ClawHub; the review, audit, debt, ga
 ### Grok Build
 
 ```bash
-grok plugin install DietrichGebert/ponytail --trust
+grok plugin install cryptosebek/ponytail-ue --trust
 ```
 
 Enable the plugin (off by default): `/plugins` → Plugins → Space on `ponytail`, or in `~/.grok/config.toml`:
@@ -296,7 +307,7 @@ Start a new session (or reload plugins). Skills show as `/ponytail`, `/ponytail-
 ### Cursor
 
 ```bash
-git clone https://github.com/DietrichGebert/ponytail
+git clone https://github.com/cryptosebek/ponytail-ue
 node ponytail/scripts/cursor-hooks.js install
 ```
 
