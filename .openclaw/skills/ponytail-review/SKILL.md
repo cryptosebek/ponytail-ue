@@ -1,7 +1,7 @@
 ---
 name: ponytail-review
 description: "Review a diff for over-engineering. Finds what to delete: reinvented stdlib, needless deps, speculative abstractions. One line per finding."
-homepage: https://github.com/DietrichGebert/ponytail
+homepage: https://github.com/cryptosebek/ponytail-ue
 license: MIT
 ---
 
@@ -22,6 +22,11 @@ Tags:
 - `yagni:` abstraction with one implementation, config nobody sets, layer with one caller.
 - `shrink:` same logic, fewer lines. Show the shorter form.
 
+In Unreal, `stdlib:` means the engine (TArray/TMap, Algo::, FMath, Kismet
+libraries, not STL) and `native:` means an engine feature (timers, delegates,
+subsystems, replication, data assets, collision profiles, Enhanced Input).
+Unused UPROPERTY/UFUNCTION specifiers, empty generated overrides, and a
+ticking actor that doesn't need to tick are `delete:`.
 
 ## Examples
 
@@ -39,6 +44,14 @@ considered whether all these validation rules are needed at this stage?"
 ✅ `L52-71: delete: retry wrapper around an idempotent local call. Nothing replaces it.`
 
 ✅ `L30-44: shrink: manual loop builds dict. dict(zip(keys, values)), 1 line.`
+
+✅ `Health.cpp:L40-58: native: Tick accumulates DeltaTime to regen every 2s. GetWorldTimerManager().SetTimer(..., 2.f, true), bCanEverTick = false.`
+
+✅ `L12-30: native: AInventoryManager actor spawned and found with GetAllActorsOfClass. UGameInstanceSubsystem, no spawn, no lookup.`
+
+✅ `L66-80: stdlib: hand-rolled loop finds item by ID. Items.FindByPredicate(...), 1 line.`
+
+✅ `L9: delete: UFUNCTION(BlueprintCallable) on a function only C++ calls. Plain member function.`
 
 ## Scoring
 

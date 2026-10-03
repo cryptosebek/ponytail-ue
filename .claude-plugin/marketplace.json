@@ -1,15 +1,15 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
-  "name": "ponytail",
-  "description": "Lazy senior dev mode for AI agents. The best code is the code you never wrote.",
+  "name": "ponytail-ue",
+  "description": "Lazy senior dev mode for Unreal Engine C++, a ponytail fork. The best code is the code you never wrote.",
   "owner": {
-    "name": "Dietrich Gebert",
-    "url": "https://github.com/DietrichGebert"
+    "name": "cryptosebek",
+    "url": "https://github.com/cryptosebek"
   },
   "plugins": [
     {
       "name": "ponytail",
-      "description": "Forces the laziest solution that works. YAGNI, stdlib first, one line over fifty.",
+      "description": "Forces the laziest solution that works in Unreal C++. YAGNI, engine first, one line over fifty.",
       "source": "./",
       "category": "productivity"
     }

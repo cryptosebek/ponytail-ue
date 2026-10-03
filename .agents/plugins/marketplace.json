@@ -1,5 +1,5 @@
 {
-  "name": "ponytail",
+  "name": "ponytail-ue",
   "interface": {
     "displayName": "Ponytail"
   },
@@ -8,7 +8,7 @@
       "name": "ponytail",
       "source": {
         "source": "url",
-        "url": "https://github.com/DietrichGebert/ponytail.git",
+        "url": "https://github.com/cryptosebek/ponytail-ue.git",
         "ref": "main"
       },
       "policy": {

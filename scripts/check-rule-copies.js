@@ -55,6 +55,12 @@ const INVARIANTS = [
   'security',
   'accessibility',
   'Lazy code without its check is unfinished', // one-check promoted to headline
+  // ponytail-ue: the Unreal "not lazy about" carve-outs, pinned the same way.
+  'HasAuthority',                          // Server RPCs are a trust boundary
+  'CoreRedirect',                          // renames silently drop asset data
+  'TWeakObjectPtr',                        // UObject lifetime / GC visibility
+  'game thread',                           // UObjects are game-thread-only
+  'IMPLEMENT_SIMPLE_AUTOMATION_TEST',      // the UE form of the one check
 ];
 
 const skill = read('skills/ponytail/SKILL.md');

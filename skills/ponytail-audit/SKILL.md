@@ -28,7 +28,10 @@ Same as ponytail-review:
 Deps the stdlib or platform already ships, single-implementation interfaces,
 factories with one product, wrappers that only delegate, files exporting one
 thing, dead flags and config, hand-rolled stdlib, helpers duplicating an
-equivalent that already lives in this repo.
+equivalent that already lives in this repo. In Unreal also: STL where
+engine containers fit, manager actors a subsystem replaces, Tick doing a
+timer's job, modules or plugins holding a handful of classes, Build.cs
+dependencies and .uproject plugins nothing uses, specifiers nothing uses.
 Before emitting `delete:`, grep the whole tree for the symbol, including tests,
 fixtures and string or dynamic references.
 

@@ -11,6 +11,18 @@
   <em>He says nothing. He writes one line. It works.</em>
 </p>
 
+> **ponytail-ue** is a fork of [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail)
+> tuned for Unreal Engine C++. The ladder reads the engine as the standard library (TArray, Algo::,
+> FMath, Kismet libraries, not STL) and engine features as the native platform (timers, delegates,
+> subsystems, replication, data assets). It also never cuts these corners: Server RPC validation,
+> CoreRedirects on renames, UObject lifetime, and game-thread-only access. Its one check is an
+> `IMPLEMENT_SIMPLE_AUTOMATION_TEST`. The UE rules live in [`AGENTS.md`](AGENTS.md) and
+> [`skills/ponytail/SKILL.md`](skills/ponytail/SKILL.md).
+>
+> Claude Code: `/plugin marketplace add cryptosebek/ponytail-ue`, then `/plugin install ponytail@ponytail-ue`.
+> Everything below is the upstream README. Its install commands point at upstream, and its benchmark
+> numbers were measured upstream on a FastAPI + React repo, not on Unreal code.
+
 <p align="center">
   <a href="https://trendshift.io/repositories/50668?utm_source=repository-badge&amp;utm_medium=badge&amp;utm_campaign=badge-repository-50668" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/repositories/50668" alt="DietrichGebert%2Fponytail | Trendshift" width="250" height="55"/></a>
 </p>
