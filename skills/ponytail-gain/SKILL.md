@@ -22,11 +22,11 @@ Unreal C++.
 
                          done   safe   done+safe   mean lines
   no plugin              25/30  24/30    19/30        16.2
-  ponytail-ue (earlier)  28/30  30/30    28/30        13.7
-  ponytail-ue (current)  25/30  30/30    25/30        13.9
+  ponytail-ue (shipped)  28/30  30/30    28/30        13.7
+  + 2 rules (reverted)   25/30  30/30    25/30        13.9
 
   Clear gap: rename ticket, CoreRedirect added 12/12 with ponytail-ue vs 0/6 without.
-  The newest rules did not improve the save ticket (builds 1/6 vs 4/6).
+  Two extra rules were tried and reverted: save built 1/6 with them vs 4/6.
   Plugin runs cost ~$0.08 vs ~$0.06 without.
 
   Reproduce:   node benchmarks/run.js --all --runs 6 --compile

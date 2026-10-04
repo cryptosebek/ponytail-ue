@@ -84,10 +84,10 @@ Latest run (5 tickets x 3 arms x 6 runs, Sonnet, every cell built with UE 5.8; o
 | Arm (30 runs) | Done | Safe | Done and safe | Mean lines |
 |---|--:|--:|--:|--:|
 | no plugin | 25 | 24 | 19 | 16.2 |
-| **ponytail-ue** (before the lambda-timer and header rules) | 28 | 30 | **28** | 13.7 |
-| ponytail-ue (current rules) | 25 | 30 | 25 | 13.9 |
+| **ponytail-ue** (the shipped rules) | 28 | 30 | **28** | 13.7 |
+| ponytail-ue + two experimental rules (reverted) | 25 | 30 | 25 | 13.9 |
 
-The clear gap is the rename ticket: with ponytail-ue the `CoreRedirect` was added in 12 of 12 runs, without it in 0 of 6. The two newest rules (lambda timers, headers that compile on their own) did not help: `save` built in 1 of 6 runs with them against 4 of 6 without, so on this ticket they are no better than noise and may be worse. An earlier 3-run comparison put upstream ponytail at 12.9 lines and 0 of 3 safe on rename: its generic rules write the shortest code, ponytail-ue writes slightly more for the Unreal checks.
+The clear gap is the rename ticket: with ponytail-ue the `CoreRedirect` was added in 12 of 12 runs, without it in 0 of 6. Two extra rules were tried and reverted (lambda timers bind weakly, headers compile on their own); they did not help: `save` built in 1 of 6 runs with them against 4 of 6 without, so on this ticket they were no better than noise and may have been worse. An earlier 3-run comparison put upstream ponytail at 12.9 lines and 0 of 3 safe on rename: its generic rules write the shortest code, ponytail-ue writes slightly more for the Unreal checks.
 
 **The rule was never "fewest tokens."** It is: write only what the task needs, and never cut validation, error handling, security, or accessibility. The code ends up small because it is necessary, not golfed.
 
