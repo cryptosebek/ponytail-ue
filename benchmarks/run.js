@@ -15,7 +15,7 @@
 //   node benchmarks/run.js --report benchmarks/runs/<stamp> [--examples]
 //
 // Env: CLAUDE_BIN (claude CLI, default "claude"), PONYTAIL_PLUGIN_DIR (default: this checkout),
-// UPSTREAM_PLUGIN_DIR (the "upstream" arm, e.g. a DietrichGebert/ponytail checkout),
+// MAIN_PLUGIN_DIR (the "main" arm: the ruleset before your change), UPSTREAM_PLUGIN_DIR (the "upstream" arm, e.g. a DietrichGebert/ponytail checkout),
 // UE_ROOT (engine dir for --compile, e.g. "D:/Epic/Epic Games/UE_5.8").
 
 const fs = require('fs');
@@ -35,6 +35,7 @@ const NO_RUN = 'Write the change (add a test if you normally would). Do not buil
 const ARMS = {
   baseline: () => null,
   ponytail: () => process.env.PONYTAIL_PLUGIN_DIR || ROOT,
+  main: () => process.env.MAIN_PLUGIN_DIR || fail('the main arm needs MAIN_PLUGIN_DIR (a checkout of the ruleset to compare against)'),
   upstream: () => process.env.UPSTREAM_PLUGIN_DIR || fail('the upstream arm needs UPSTREAM_PLUGIN_DIR (a DietrichGebert/ponytail checkout)'),
 };
 
