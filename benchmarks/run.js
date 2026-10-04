@@ -311,6 +311,7 @@ function claude(ws, args) {
 
 async function cell(dir, id, arm, model, n) {
   const ws = path.join(dir, `${id}__${arm}__${model}__${n}`);
+  fs.rmSync(ws, { recursive: true, force: true }); // a rerun must not inherit a half-finished cell
   fs.mkdirSync(ws, { recursive: true });
   seed(ws);
   // --setting-sources project,local drops the user's globally enabled plugins, so each arm loads exactly
@@ -408,7 +409,7 @@ async function main() {
     options: {
       selftest: { type: 'boolean' }, compile: { type: 'boolean' }, all: { type: 'boolean' }, examples: { type: 'boolean' },
       task: { type: 'string' }, arms: { type: 'string', default: 'baseline,ponytail' }, model: { type: 'string', default: 'sonnet' },
-      runs: { type: 'string', default: '1' }, workers: { type: 'string', default: '4' }, report: { type: 'string' },
+      runs: { type: 'string', default: '1' }, workers: { type: 'string', default: '4' }, report: { type: 'string' }, resume: { type: 'string' },
     },
   });
   if (o.report) return report(o.report, o);
@@ -423,9 +424,15 @@ async function main() {
   if (v.error) fail('claude CLI not found; put it on PATH or set CLAUDE_BIN');
 
   const stamp = new Date().toISOString().replace(/[-:]/g, '').replace('T', '-').slice(0, 15);
-  const dir = path.join(__dirname, 'runs', stamp);
+  const dir = o.resume || path.join(process.env.BENCH_RUNS_DIR || path.join(__dirname, 'runs'), stamp);
   const specs = ids.flatMap((id) => o.model.split(',').flatMap((model) => arms.flatMap((arm) =>
     Array.from({ length: +o.runs }, (_, n) => [id, arm, model, n]))));
+  // --resume <dir>: keep cells that finished (a session and, with --compile, a build verdict) and rerun the rest.
+  const finished = (id, arm, model, n) => {
+    const ws = path.join(dir, `${id}__${arm}__${model}__${n}`);
+    try { JSON.parse(fs.readFileSync(path.join(ws, '_claude.json'), 'utf8')); if (o.compile) JSON.parse(fs.readFileSync(path.join(ws, '_build.json'), 'utf8')); return true; } catch { return false; }
+  };
+  if (o.resume) specs.splice(0, specs.length, ...specs.filter((sp) => !finished(...sp)));
   console.log(`claude ${v.stdout.trim()}: ${specs.length} cells, ${o.workers} at a time -> ${dir}`);
   // To stop a run, kill the whole tree (taskkill /T /F /PID <pid>): killing only node orphans live sessions.
   let next = 0, done = 0;
