@@ -1,6 +1,6 @@
 # Contributing
 
-> This is ponytail-ue, an Unreal Engine C++ fork. Changes to the shared, non-Unreal parts belong upstream at [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail). Here, Unreal rule changes should keep the UE invariants in `scripts/check-rule-copies.js` passing; the benchmark harness below has no Unreal task yet.
+> This is ponytail-ue, an Unreal Engine C++ fork. Changes to the shared, non-Unreal parts belong upstream at [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail). Here, Unreal rule changes should keep the UE invariants in `scripts/check-rule-copies.js` passing and show numbers from the Unreal benchmark below.
 
 Thanks for helping. There are two kinds of changes, with different bars.
 
@@ -26,19 +26,19 @@ The PR should show:
 
 Without that, the PR gets closed, however good the idea is.
 
-[`benchmarks/agentic/run.py`](benchmarks/agentic/run.py) does the work (setup in
-[its README](benchmarks/agentic/README.md#reproduce)). The `ponytail` arm loads the plugin from
-`PONYTAIL_PLUGIN_DIR`, so run it once against a checkout of `main` and once against your branch:
+[`benchmarks/run.js`](benchmarks/run.js) does the work ([setup](benchmarks/README.md#run)). The
+`ponytail` arm loads the plugin from `PONYTAIL_PLUGIN_DIR`, so run it once against a checkout of
+`main` and once against your branch:
 
 ```bash
-cd benchmarks/agentic
-python run.py --selftest
-PONYTAIL_PLUGIN_DIR=/abs/path/to/ponytail-main python run.py --task <task> --arms baseline,ponytail --models opus --runs 6
-PONYTAIL_PLUGIN_DIR=/abs/path/to/your-branch python run.py --task <task> --arms ponytail --models opus --runs 6
+node benchmarks/run.js --selftest
+PONYTAIL_PLUGIN_DIR=/abs/path/to/ponytail-ue-main node benchmarks/run.js --task <task> --arms baseline,ponytail --model opus --runs 6
+PONYTAIL_PLUGIN_DIR=/abs/path/to/your-branch node benchmarks/run.js --task <task> --arms ponytail --model opus --runs 6
 ```
 
-If your task isn't in `tasks.py` yet, add it with a `good` and a `bad` reference, so `--selftest`
-proves the scorer catches the difference.
+If your task isn't in `TASKS` yet, add it with a `good` and a `bad` reference edit of the fixture,
+so `--selftest` (and `npm test`) proves the scorer catches the difference. If you have an engine,
+`--selftest --compile` proves both references build.
 
 Rule text lives in `AGENTS.md` and `skills/ponytail/SKILL.md`. Keep the copies in sync
 (`node scripts/check-rule-copies.js`) and regenerate `.openclaw/` with

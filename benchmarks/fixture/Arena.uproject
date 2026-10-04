@@ -1,0 +1,11 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "5.8",
+	"Modules": [
+		{
+			"Name": "Arena",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
+}

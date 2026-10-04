@@ -22,9 +22,10 @@ node scripts/check-rule-copies.js          # rule copies must match AGENTS.md
 node scripts/check-versions.js             # version strings consistent across manifests
 node scripts/build-openclaw-skills.js      # regenerate .openclaw/skills from skills/
 npm install --prefix ponytail-mcp          # MCP deps (needed before npm test in CI)
+node benchmarks/run.js --selftest          # benchmark scorers vs good/bad refs (also in npm test); add --compile with UE_ROOT to build them
 ```
 
-CI (`.github/workflows/test.yml`) runs check-rule-copies, check-versions, then `npm test` (Node 22; Python 3.12 + pandas for correctness checks).
+CI (`.github/workflows/test.yml`) runs check-rule-copies, check-versions, then `npm test` (Node 22; Python 3.12 for the Hermes adapter tests).
 
 ## Architecture
 
@@ -33,10 +34,10 @@ CI (`.github/workflows/test.yml`) runs check-rule-copies, check-versions, then `
 - **Hook runtime** (`hooks/`): `ponytail-activate.js` (SessionStart: writes `.ponytail-active` flag in the Claude config dir, emits ruleset as hidden context, statusline nudge), `ponytail-mode-tracker.js`, `ponytail-subagent.js`, statusline scripts (`.sh`/`.ps1`). `ponytail-instructions.js` is the shared builder (filters SKILL.md by mode); `ponytail-config.js` resolves default mode; `ponytail-runtime.js` has host detection (Codex/Copilot/Cursor/Zcode) and output writing. Host hook manifests are the `*-hooks.json` files.
 - **Reuse of the builder**: `pi-extension/` and `ponytail-mcp/` both import `hooks/ponytail-instructions.js`, so every host emits identical rules. Each has its own `package.json` and tests.
 - **Plugin manifests**: `.claude-plugin/`, `.codex-plugin/`, `.devin-plugin/`, `.github/plugin/`, `.grok-plugin/`, `.qoder-plugin/`, `.agents/plugins/`, `plugin.json`, `plugin.yaml`, `gemini-extension.json`, `opencode.json`, `__init__.py` (Hermes), `.opencode/plugins/`. Versions must agree (`check-versions.js`).
-- **Benchmarks** (`benchmarks/`): agentic harness in `benchmarks/agentic/run.py`; `--selftest` validates scorers against `good`/`bad` references in `tasks.py`.
+- **Benchmark** (`benchmarks/`): `run.js` runs headless `claude -p` sessions on one-line Unreal tickets against a copy of `benchmarks/fixture/` (tiny UE 5.8 project), scoring the git diff for LOC, correct (regex, optional UBT build), and safe (the UE carve-out the ticket tempts). Each task in `TASKS` carries `good`/`bad` reference edits that `--selftest` and `tests/benchmark.test.js` verify. `--report <dir> --examples` regenerates `examples/` from a kept run.
 
 ## Contribution rules (from CONTRIBUTING.md)
 
-- Any change to what the agent is told (skills, AGENTS.md, rule copies, `.openclaw/skills/`) needs a three-arm benchmark (baseline / main / your change, >=6 runs per arm, current model) or it is closed. Run with `PONYTAIL_PLUGIN_DIR=/abs/path python run.py --task <task> --arms ponytail --models opus --runs 6` from `benchmarks/agentic`.
+- Any change to what the agent is told (skills, AGENTS.md, rule copies, `.openclaw/skills/`) needs a three-arm benchmark (baseline / main / your change, >=6 runs per arm, current model) or it is closed. Run with `PONYTAIL_PLUGIN_DIR=/abs/path node benchmarks/run.js --task <task> --arms ponytail --model opus --runs 6`.
 - Hooks, installers, adapters, docs: no benchmark; run `npm test`, `check-rule-copies.js`, `check-versions.js`. One change per PR, link the issue.
 - Non-trivial logic leaves one runnable check behind (see AGENTS.md); mark deliberate simplifications with a `ponytail:` comment naming the ceiling.
