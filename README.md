@@ -84,7 +84,7 @@ One run (5 tickets x 3 arms x 3 runs, Sonnet, every cell built with UE 5.8; smal
 | Arm (15 runs) | Done | Safe | Done and safe | Mean lines |
 |---|--:|--:|--:|--:|
 | no plugin | 12 | 12 | 9 | 16.2 |
-| upstream ponytail | 13 | 12 | 10 | 12.9 |
+| upstream ponytail | 14 | 12 | 11 | 12.9 |
 | **ponytail-ue** | 14 | 15 | **14** | 13.5 |
 
 The clear gap is the rename ticket: ponytail-ue added the `CoreRedirect` in 3 of 3 runs, the others in 0 of 3. Upstream's generic rules wrote the shortest code; ponytail-ue is smaller than no plugin but not smaller than upstream.

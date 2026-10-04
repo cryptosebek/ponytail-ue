@@ -237,11 +237,18 @@ function build(ws) {
   const [script, platform] = { win32: ['Build.bat', 'Win64'], darwin: ['Build.sh', 'Mac'] }[process.platform] || ['Build.sh', 'Linux'];
   const cmd = `"${path.join(ue, 'Engine', 'Build', 'BatchFiles', script)}" ArenaEditor ${platform} Development -Project="${path.join(ws, 'Arena.uproject')}" -WaitMutex`;
   const r = spawnSync(cmd, { shell: true, encoding: 'utf8', maxBuffer: 64 << 20 });
-  fs.writeFileSync(path.join(ws, '_build.log'), (r.stdout || '') + (r.stderr || ''));
-  fs.writeFileSync(cache, JSON.stringify({ ok: r.status === 0 }));
+  const log = (r.stdout || '') + (r.stderr || '');
+  fs.writeFileSync(path.join(ws, '_build.log'), log);
   // UBT leaves ~2.5 GB per workspace; the verdict and log are all we keep.
   for (const d of ['Binaries', 'Intermediate', 'Saved', 'DerivedDataCache']) fs.rmSync(path.join(ws, d), { recursive: true, force: true });
-  return r.status === 0;
+  // Trust UBT's "Result:" line, not its exit code: a full disk fails UBT after "Result: Succeeded", or before it compiles.
+  const verdict = /^Result: (\w+)/m.exec(log)?.[1];
+  if (!verdict) {
+    console.error(`no UBT verdict in ${path.join(ws, '_build.log')} (disk full?): counted as failed, not cached; --report <dir> --compile rebuilds it`);
+    return false;
+  }
+  fs.writeFileSync(cache, JSON.stringify({ ok: verdict === 'Succeeded' }));
+  return verdict === 'Succeeded';
 }
 
 function score(id, ws, compile) {
@@ -389,7 +396,7 @@ function writeExamples(dir, cells) {
         `\`\`\`diff\n${diff.trim() || '(no changes)'}\n\`\`\`\n`;
     };
     fs.writeFileSync(path.join(out, `${id}.md`),
-      `# ${id}\n\n**Ticket:** "${TASKS[id].prompt}"\n\nVerbatim \`git diff\` from a benchmark run (\`benchmarks/runs/${path.basename(dir)}\`), ` +
+      `# ${id}\n\n**Ticket:** "${TASKS[id].prompt}"\n\nVerbatim \`git diff\` from a benchmark run (run directory \`${path.basename(dir)}\`), ` +
       `the median-LOC cell of each arm. Reproduce: \`node benchmarks/run.js --all --examples\`.\n\n` +
       `${section('Without ponytail-ue', b)}\n${section('With ponytail-ue', p)}`);
     table.push(`| [${id}](${id}.md) | ${TASKS[id].prompt} | ${cellText(b)} | ${cellText(p)} |`);
@@ -427,10 +434,10 @@ async function main() {
   const dir = o.resume || path.join(process.env.BENCH_RUNS_DIR || path.join(__dirname, 'runs'), stamp);
   const specs = ids.flatMap((id) => o.model.split(',').flatMap((model) => arms.flatMap((arm) =>
     Array.from({ length: +o.runs }, (_, n) => [id, arm, model, n]))));
-  // --resume <dir>: keep cells that finished (a session and, with --compile, a build verdict) and rerun the rest.
+  // --resume <dir>: keep cells whose session finished and rerun the rest. A missing build verdict is
+  // rebuilt by the closing report, not paid for again with a new session.
   const finished = (id, arm, model, n) => {
-    const ws = path.join(dir, `${id}__${arm}__${model}__${n}`);
-    try { JSON.parse(fs.readFileSync(path.join(ws, '_claude.json'), 'utf8')); if (o.compile) JSON.parse(fs.readFileSync(path.join(ws, '_build.json'), 'utf8')); return true; } catch { return false; }
+    try { JSON.parse(fs.readFileSync(path.join(dir, `${id}__${arm}__${model}__${n}`, '_claude.json'), 'utf8')); return true; } catch { return false; }
   };
   if (o.resume) specs.splice(0, specs.length, ...specs.filter((sp) => !finished(...sp)));
   console.log(`claude ${v.stdout.trim()}: ${specs.length} cells, ${o.workers} at a time -> ${dir}`);

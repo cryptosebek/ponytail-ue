@@ -19,7 +19,7 @@ quote upstream ponytail's web-task numbers; they don't transfer to Unreal C++.
 
                     done   safe   done+safe   mean lines
   no plugin         12/15  12/15     9/15        16.2
-  upstream          13/15  12/15    10/15        12.9
+  upstream          14/15  12/15    11/15        12.9
   ponytail-ue       14/15  15/15    14/15        13.5
 
   Clear gap: rename ticket, CoreRedirect added 3/3 (ponytail-ue) vs 0/3 (others).
