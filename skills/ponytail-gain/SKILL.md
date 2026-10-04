@@ -12,17 +12,23 @@ description: >
 Display this card when invoked. One-shot: do NOT change mode, write flag
 files, or persist anything.
 
-ponytail-ue has no published Unreal benchmark medians yet. Do not quote
-upstream ponytail's numbers: they were measured on web tasks (FastAPI,
-React) and don't transfer to Unreal C++.
+Numbers below are from one run of the Unreal benchmark: 5 tickets x 3 arms x
+3 runs, Sonnet, each cell built with UE 5.8. Small sample, one model. Do not
+quote upstream ponytail's web-task numbers; they don't transfer to Unreal C++.
 
 ```
-  ponytail gain                   Unreal benchmark · no published medians yet
+  ponytail gain          Unreal benchmark · 15 runs per arm · Sonnet · UE 5.8
 
-  Measure it:  node benchmarks/run.js --all --runs 3
-               5 UE tickets, no plugin vs ponytail-ue:
-               lines added, ticket done, Unreal corner not cut, cost
+                    done   safe   done+safe   mean lines
+  no plugin         12/15  12/15     9/15        16.2
+  upstream          13/15  12/15    10/15        12.9
+  ponytail-ue       14/15  15/15    14/15        13.5
 
+  Clear gap: rename ticket, CoreRedirect added 3/3 (ponytail-ue) vs 0/3 (others).
+  Upstream wrote the shortest code; ponytail-ue is not shorter than it.
+  Both plugins cost more per run (~$0.08 vs ~$0.06).
+
+  Reproduce:   node benchmarks/run.js --all --runs 3 --compile
   This repo:   /ponytail-debt  (shortcuts you deferred)
                /ponytail-audit (what's still cuttable)
 ```
