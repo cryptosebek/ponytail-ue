@@ -79,15 +79,15 @@ Real agent diffs, without and with ponytail-ue, in [examples/](examples/).
 
 A real headless Claude Code session gets a fresh copy of a tiny UE 5.8 project ([benchmarks/fixture](benchmarks/fixture)) and a one-line ticket, and is scored on the `git diff` it leaves behind: lines added, whether the ticket is done (optionally a real UBT build), and whether it cut the Unreal corner the ticket tempts you to cut (frame-rate-bound Tick, an unvalidated Server RPC, a rename without a CoreRedirect, a pointer the GC can't see, UObjects off the game thread). Method and how to run it: [benchmarks/](benchmarks/).
 
-One run (5 tickets x 3 arms x 3 runs, Sonnet, every cell built with UE 5.8; small sample, one model):
+Latest run (5 tickets x 3 arms x 6 runs, Sonnet, every cell built with UE 5.8; one model, so treat small gaps as noise):
 
-| Arm (15 runs) | Done | Safe | Done and safe | Mean lines |
+| Arm (30 runs) | Done | Safe | Done and safe | Mean lines |
 |---|--:|--:|--:|--:|
-| no plugin | 12 | 12 | 9 | 16.2 |
-| upstream ponytail | 14 | 12 | 11 | 12.9 |
-| **ponytail-ue** | 14 | 15 | **14** | 13.5 |
+| no plugin | 25 | 24 | 19 | 16.2 |
+| **ponytail-ue** (before the lambda-timer and header rules) | 28 | 30 | **28** | 13.7 |
+| ponytail-ue (current rules) | 25 | 30 | 25 | 13.9 |
 
-The clear gap is the rename ticket: ponytail-ue added the `CoreRedirect` in 3 of 3 runs, the others in 0 of 3. Upstream's generic rules wrote the shortest code; ponytail-ue is smaller than no plugin but not smaller than upstream.
+The clear gap is the rename ticket: with ponytail-ue the `CoreRedirect` was added in 12 of 12 runs, without it in 0 of 6. The two newest rules (lambda timers, headers that compile on their own) did not help: `save` built in 1 of 6 runs with them against 4 of 6 without, so on this ticket they are no better than noise and may be worse. An earlier 3-run comparison put upstream ponytail at 12.9 lines and 0 of 3 safe on rename: its generic rules write the shortest code, ponytail-ue writes slightly more for the Unreal checks.
 
 **The rule was never "fewest tokens."** It is: write only what the task needs, and never cut validation, error handling, security, or accessibility. The code ends up small because it is necessary, not golfed.
 

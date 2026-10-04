@@ -12,23 +12,24 @@ description: >
 Display this card when invoked. One-shot: do NOT change mode, write flag
 files, or persist anything.
 
-Numbers below are from one run of the Unreal benchmark: 5 tickets x 3 arms x
-3 runs, Sonnet, each cell built with UE 5.8. Small sample, one model. Do not
-quote upstream ponytail's web-task numbers; they don't transfer to Unreal C++.
+Numbers below are from the latest Unreal benchmark: 5 tickets x 3 arms x 6
+runs, Sonnet, each cell built with UE 5.8. One model, so small gaps are noise.
+Do not quote upstream ponytail's web-task numbers; they don't transfer to
+Unreal C++.
 
 ```
-  ponytail gain          Unreal benchmark · 15 runs per arm · Sonnet · UE 5.8
+  ponytail gain          Unreal benchmark · 30 runs per arm · Sonnet · UE 5.8
 
-                    done   safe   done+safe   mean lines
-  no plugin         12/15  12/15     9/15        16.2
-  upstream          14/15  12/15    11/15        12.9
-  ponytail-ue       14/15  15/15    14/15        13.5
+                         done   safe   done+safe   mean lines
+  no plugin              25/30  24/30    19/30        16.2
+  ponytail-ue (earlier)  28/30  30/30    28/30        13.7
+  ponytail-ue (current)  25/30  30/30    25/30        13.9
 
-  Clear gap: rename ticket, CoreRedirect added 3/3 (ponytail-ue) vs 0/3 (others).
-  Upstream wrote the shortest code; ponytail-ue is not shorter than it.
-  Both plugins cost more per run (~$0.08 vs ~$0.06).
+  Clear gap: rename ticket, CoreRedirect added 12/12 with ponytail-ue vs 0/6 without.
+  The newest rules did not improve the save ticket (builds 1/6 vs 4/6).
+  Plugin runs cost ~$0.08 vs ~$0.06 without.
 
-  Reproduce:   node benchmarks/run.js --all --runs 3 --compile
+  Reproduce:   node benchmarks/run.js --all --runs 6 --compile
   This repo:   /ponytail-debt  (shortcuts you deferred)
                /ponytail-audit (what's still cuttable)
 ```

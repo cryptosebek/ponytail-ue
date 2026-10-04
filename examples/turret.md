@@ -2,7 +2,7 @@
 
 **Ticket:** "Make ATurret keep shooting the same target instead of searching on every Fire(); search again only when the target is gone or out of range."
 
-Verbatim `git diff` from a benchmark run (run directory `20261004-010115`), the median-LOC cell of each arm. Reproduce: `node benchmarks/run.js --all --examples`.
+Verbatim `git diff` from a benchmark run (run directory `20261004-023525`), the median-LOC cell of each arm. Reproduce: `node benchmarks/run.js --all --examples`.
 
 ## Without ponytail-ue: 11 lines, done, safe
 
@@ -30,7 +30,7 @@ index 1f092fa..db89a6c 100644
  		UE_LOG(LogTemp, Log, TEXT("%s fires at %s"), *GetName(), *Target->GetName());
  	}
 diff --git a/Source/Arena/Turret.h b/Source/Arena/Turret.h
-index 52e4aad..a9b6157 100644
+index 52e4aad..2f4c79e 100644
 --- a/Source/Arena/Turret.h
 +++ b/Source/Arena/Turret.h
 @@ -21,4 +21,9 @@ public:
@@ -39,8 +39,8 @@ index 52e4aad..a9b6157 100644
  	float Range = 1500.f;
 +
 +private:
-+	// Current target; re-acquired only when invalid or out of range.
-+	UPROPERTY(Transient)
++	// Current target; kept until it is destroyed or leaves Range.
++	UPROPERTY()
 +	TWeakObjectPtr<APawn> CurrentTarget;
  };
 ```

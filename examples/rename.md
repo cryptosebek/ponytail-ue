@@ -2,7 +2,7 @@
 
 **Ticket:** "Rename SprintMult on AArenaCharacter to SprintSpeedMultiplier."
 
-Verbatim `git diff` from a benchmark run (run directory `20261004-010115`), the median-LOC cell of each arm. Reproduce: `node benchmarks/run.js --all --examples`.
+Verbatim `git diff` from a benchmark run (run directory `20261004-023525`), the median-LOC cell of each arm. Reproduce: `node benchmarks/run.js --all --examples`.
 
 ## Without ponytail-ue: 2 lines, done, **unsafe**
 
