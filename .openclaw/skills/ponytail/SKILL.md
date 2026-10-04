@@ -95,8 +95,7 @@ In Unreal these are never the corner to cut:
 
 - Server RPCs are a trust boundary: validate and clamp client input on the server, gate state changes on HasAuthority().
 - Renaming a UPROPERTY, UCLASS, USTRUCT, or UFUNCTION needs a CoreRedirect in DefaultEngine.ini, or existing assets and Blueprints silently lose data.
-- UObject lifetime: a UObject pointer member is `UPROPERTY() TObjectPtr<>` (owned) or TWeakObjectPtr (observed), never a bare pointer the GC can't see. IsValid() on anything that can be destroyed. A timer or delegate that outlives the call binds a member function or `FTimerDelegate::CreateWeakLambda(this, ...)`, never a lambda capturing raw `this`: that keeps firing into a destroyed actor.
-- A header compiles on its own: every type it names gets a forward declaration (`class USaveGame;`) or its include.
+- UObject lifetime: a UObject pointer member is `UPROPERTY() TObjectPtr<>` (owned) or TWeakObjectPtr (observed), never a bare pointer the GC can't see. IsValid() on anything that can be destroyed.
 - UObjects are touched only on the game thread: async work hands results back with `AsyncTask(ENamedThreads::GameThread, ...)`.
 - Accessibility basics in UI: remappable input, readable text scale, cues that don't rely on color alone.
 
